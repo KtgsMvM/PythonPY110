@@ -109,3 +109,47 @@ def cart_del_view(request, id_product):
                             status=404,
                             json_dumps_params={'ensure_ascii': False})
 
+def coupon_check_view(request, name_coupon, is_valid):
+    # DATA_COUPON - база данных купонов: ключ - код купона (name_coupon);
+    # значение - словарь со значением скидки в процентах и
+    # значением действителен ли купон или нет
+    DATA_COUPON = {
+        "coupon": {
+            "value": 10,
+            "is_valid": True},
+        "coupon_old": {
+            "value": 20,
+            "is_valid": False},
+    }
+    if request.method == "GET":
+        data = coupon_check_view()
+        if is_valid is not None:
+            name_coupon = DATA_COUPON()
+            return JsonResponse(f' "Купон действителен! Размер скидки":{discount} %')
+
+        # TODO Проверьте, что купон есть в DATA_COUPON, если он есть, то верните JsonResponse в котором по ключу "discount"
+        # получают значение скидки в процентах, а по ключу "is_valid" понимают действителен ли купон или нет (True, False)
+
+        return HttpResponseNotFound("Неверный купон")
+        # TODO Если купона нет в базе, то верните HttpResponseNotFound("Неверный купон")
+
+
+def delivery_estimate_view(request):
+    # База данных по стоимости доставки. Ключ - Страна; Значение словарь с городами и ценами; Значение с ключом fix_price
+    # применяется если нет города в данной стране
+    DATA_PRICE = {
+            "Россия": {"Москва": {"price": 80},
+            "Санкт-Петербург": {"price": 80},
+            "fix_price": 100,},
+                }
+    if request.method == "GET":
+        data = request.GET
+        country = data.get('country')
+        city = data.get('city')
+        # TODO Реализуйте логику расчёта стоимости доставки, которая выполняет следующее:
+        if country and city
+        # Если в базе DATA_PRICE есть и страна (country) и существует город(city),
+    # то вернуть JsonResponse со словарём, {"price": значение стоимости доставки}
+        # Если в базе DATA_PRICE есть страна, но нет города,
+    # то вернуть JsonResponse со словарём, {"price": значение фиксированной стоимости доставки}
+        # Если нет страны, то вернуть HttpResponseNotFound("Неверные данные")
